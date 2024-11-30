@@ -3,6 +3,32 @@
 #include <unistd.h>
 
 /**
+ * _print_number - prints an integer to stdout
+ * @n: the integer to print
+ *
+ * Return: number of characters printed
+ */
+int _print_number(int n)
+{
+	int count = 0;
+	char c;
+
+	if (n < 0)
+	{
+		count += write(1, "-", 1);
+		n = -n;
+	}
+
+	if (n / 10)
+		count += _print_number(n / 10);
+
+	c = (n % 10) + '0';
+	count += write(1, &c, 1);
+
+	return (count);
+}
+
+/**
  * _printf - produces output according to a format
  * @format: format string containing the characters and specifiers
  *
@@ -39,6 +65,10 @@ int _printf(const char *format, ...)
 				break;
 			case '%': /* Percent */
 				count += write(1, "%", 1);
+				break;
+			case 'd': /* Decimal integer */
+			case 'i': /* Integer */
+				count += _print_number(va_arg(args, int));
 				break;
 			default: /* Unknown specifier */
 				count += write(1, "%", 1);
