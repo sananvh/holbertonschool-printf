@@ -1,89 +1,47 @@
 #include "main.h"
-#include <stdarg.h>
-#include <unistd.h>
 
 /**
- * _print_number - prints an integer to stdout
- * @n: the integer to print
+ * _printf - Prints the given format with variables.
+ * @format: Main format
  *
- * Return: number of characters printed
- */
-int _print_number(int n)
-{
-	int count = 0;
-	char c;
-
-	if (n < 0)
-	{
-		count += write(1, "-", 1);
-		n = -n;
-	}
-
-	if (n / 10)
-		count += _print_number(n / 10);
-
-	c = (n % 10) + '0';
-	count += write(1, &c, 1);
-
-	return (count);
-}
-
-/**
- * _printf - produces output according to a format
- * @format: format string containing the characters and specifiers
- *
- * Return: the number of characters printed (excluding the null byte)
+ * Return: Number of the chars printed.
  */
 int _printf(const char *format, ...)
 {
-	va_list args;
-	int i = 0, count = 0;
-	char c, *s;
+	va_list arg;
+	int len = 0, i = 0;
+	char crntchar, *crntstring;
 
-	if (!format)
-		return (-1);
-
-	va_start(args, format);
-
-	while (format && format[i])
+	va_start(arg, format);
+	while (format[i])
 	{
 		if (format[i] == '%')
-		{
-			i++;
-			switch (format[i])
+			switch (format[i + 1])
 			{
-			case 'c': /* Character */
-				c = va_arg(args, int);
-				count += write(1, &c, 1);
-				break;
-			case 's': /* String */
-				s = va_arg(args, char *);
-				if (!s)
-					s = "(null)";
-				while (*s)
-					count += write(1, s++, 1);
-				break;
-			case '%': /* Percent */
-				count += write(1, "%", 1);
-				break;
-			case 'd': /* Decimal integer */
-			case 'i': /* Integer */
-				count += _print_number(va_arg(args, int));
-				break;
-			default: /* Unknown specifier */
-				count += write(1, "%", 1);
-				count += write(1, &format[i], 1);
-				break;
+				case 'c':
+					crntchar = (char)va_arg(arg, int);
+					write_char(&len, crntchar), i += 2;
+					break;
+				case 's':
+					crntstring = va_arg(arg, char*);
+					write_str(&len, crntstring), i += 2;
+					break;
+				case 'd':
+				case 'i':
+					write_int(&len, va_arg(arg, int)), i += 2;
+					break;
+				case '%':
+					write_char(&len, '%'), i += 2;
+					break;
+				case '\0':
+					continue;
+				default:
+					write_char(&len, format[i]), i++;
+					break;
 			}
-		}
 		else
-		{
-			count += write(1, &format[i], 1);
-		}
-		i++;
+			write_char(&len, format[i]), i++;
 	}
-
-	va_end(args);
-	return (count);
+	va_end(arg);
+	return (len);
 }
-
