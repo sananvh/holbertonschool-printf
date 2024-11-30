@@ -4,7 +4,7 @@
 
 /**
  * _printf - produces output according to a format
- * @format: format string containing the characters and the specifiers
+ * @format: format string containing the characters and specifiers
  *
  * Return: the number of characters printed (excluding the null byte)
  */
@@ -40,7 +40,7 @@ int _printf(const char *format, ...)
 			case '%': /* Percent */
 				count += write(1, "%", 1);
 				break;
-			default: /* Unknown specifier, treat as literal */
+			default: /* Unknown specifier */
 				count += write(1, "%", 1);
 				count += write(1, &format[i], 1);
 				break;

@@ -1,11 +1,9 @@
-#include "main.h"
+#ifndef MAIN_H
+#define MAIN_H
 
-int main(void)
-{
-	_printf("Character: %c\n", 'A');
-	_printf("String: %s\n", "Hello, world!");
-	_printf("Percent: %%\n");
-	_printf("Unknown: %y\n");
-	return (0);
-}
+#include <stdarg.h>
+
+int _printf(const char *format, ...);
+
+#endif /* MAIN_H */
 
